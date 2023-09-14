@@ -1,0 +1,1 @@
+export 'src/generated/mhu_struct.pb.dart';

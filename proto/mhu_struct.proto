@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+import "mhu_dart_pbschema.proto";
+
+message MstTemplateMessageMsg {
+  enum ParameterTypeEnm {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_ANY = 1;
+    TYPE_SINGLE = 2;
+    TYPE_MAP_KEY = 3;
+  }
+  message ParameterMsg {
+    MpbDescriptionMsg description = 1;
+    uint32 tag_number = 2;
+    ParameterTypeEnm type = 3;
+  }
+  MpbDescriptionMsg description = 1;
+  repeated ParameterMsg parameters = 2;
+  repeated MstTemplateLogicalFieldMsg fields = 3;
+}
+
+message MstTemplateArgumentMsg {
+  uint32 tag_number = 1;
+}
+
+message MstTemplateLogicalFieldMsg {
+  oneof type {
+    MstTemplateFieldMsg physical_field = 1;
+    MstTemplateOneofMsg oneof = 2;
+  }
+}
+
+message MstTemplateFieldMsg {
+  MpbFieldInfoMsg field_info = 1;
+  MstTemplateAnyTypeMsg type = 2;
+}
+
+message MstTemplateAnyTypeMsg {
+  oneof type {
+    MstTemplateSingleTypeMsg single_type = 1;
+    MstTemplateRepeatedTypeMsg repeated_type = 2;
+    MstTemplateMapTypeMsg map_type = 3;
+    MstTemplateArgumentMsg any_template_argument = 4;
+  }
+}
+
+message MstTemplateOneofMsg {
+  MpbDescriptionMsg description = 1;
+  repeated MstTemplateFieldMsg fields = 2;
+}
+
+message MstTemplateSingleTypeMsg {
+  oneof type {
+    MpbScalarTypeEnm scalar_type = 1;
+    MstTemplateMessageReferenceMsg message_type = 2;
+    MpbReferenceMsg enum_type = 3;
+    MstTemplateArgumentMsg single_template_argument = 4;
+  }
+}
+
+message MstTemplateMessageReferenceMsg {
+  MpbReferenceMsg message_reference = 1;
+  repeated MstTemplateAnyTypeMsg template_arguments = 2;
+}
+
+message MstTemplateRepeatedTypeMsg {
+  MstTemplateSingleTypeMsg single_type = 1;
+}
+
+message MstTemplateMapTypeMsg {
+  oneof key_source {
+    MpbMapTypeMsg.KeyTypeEnm key_type = 1;
+    MstTemplateArgumentMsg map_key_template_argument = 2;
+  }
+  MstTemplateSingleTypeMsg value_type = 3;
+}
